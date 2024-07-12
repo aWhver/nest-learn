@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Body } from '@nestjs/common';
+import { Controller, Post, Param, Body, Get, Session } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
@@ -20,5 +20,16 @@ export class AuthController {
   // register(@Param('username') username: string, @Param('pwd') pwd: string) {
   register(@Body() createAuthDto: CreateAuthDto) {
     return this.authService.register(createAuthDto.username, createAuthDto.pwd);
+  }
+
+  @skipAuth()
+  @Get('session')
+  session(@Session() session) {
+    console.log('session', session);
+    // return
+    if (!session.count) {
+      session.count = 0;
+    }
+    return ++session.count;
   }
 }
